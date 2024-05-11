@@ -619,6 +619,13 @@ public class MainActivity extends AppCompatActivity implements QueryInterface, K
                 Rect outR = new Rect();
                 edit.getGlobalVisibleRect(outR);
                 boolean isKeyboardOpen = !outR.contains((int) ev.getRawX(), (int) ev.getRawY());
+                if (isKeyboardOpen) {
+                    edit.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive(edit) && imm.isAcceptingText()) {
+                        imm.hideSoftInputFromWindow(edit.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                }
                 edit.setCursorVisible(!isKeyboardOpen);
             }
         }
