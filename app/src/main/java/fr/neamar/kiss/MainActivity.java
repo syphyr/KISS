@@ -621,7 +621,7 @@ public class MainActivity extends AppCompatActivity implements QueryInterface, K
                 boolean isKeyboardOpen = !outR.contains((int) ev.getRawX(), (int) ev.getRawY());
                 if (isKeyboardOpen) {
                     edit.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = ContextCompat.getSystemService(this, InputMethodManager.class);
                     if (imm.isActive(edit) && imm.isAcceptingText()) {
                         imm.hideSoftInputFromWindow(edit.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     }
