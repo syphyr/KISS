@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements QueryInterface, K
         // Hide the "X" after the text field, instead displaying the menu button
         displayClearOnInput();
 
-        systemUiVisibilityHelper = new SystemUiVisibilityHelper(this);
+        systemUiVisibilityHelper = new SystemUiVisibilityHelper(this, false);
 
         // For devices with hardware keyboards, give focus to search field.
         if (getResources().getConfiguration().keyboard == Configuration.KEYBOARD_QWERTY || getResources().getConfiguration().keyboard == Configuration.KEYBOARD_12KEY) {
