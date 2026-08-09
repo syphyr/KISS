@@ -25,12 +25,12 @@ import fr.neamar.kiss.utils.fuzzy.MatchInfo;
 
 public class SettingsProvider extends SimpleProvider<SettingPojo> {
     private final static String SCHEME = "setting://";
-    private final String settingName;
+    private final String settingsPrefix;
     private final List<SettingPojo> pojos = new ArrayList<>();
     private final WeakReference<Context> contextReference;
 
     public SettingsProvider(Context context) {
-        this.settingName = context.getString(R.string.settings_prefix).toLowerCase(Locale.ROOT);
+        this.settingsPrefix = context.getString(R.string.settings_prefix).toLowerCase(Locale.ROOT);
         this.contextReference = new WeakReference<>(context);
 
         reload();
@@ -119,7 +119,7 @@ public class SettingsProvider extends SimpleProvider<SettingPojo> {
 
             if (!match) {
                 // Match localized setting name
-                matchInfo = fuzzyScore.match(settingName);
+                matchInfo = fuzzyScore.match(settingsPrefix);
                 match = pojo.updateMatchingRelevance(matchInfo, match);
             }
 
