@@ -11,6 +11,7 @@ import androidx.preference.PreferenceManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,11 +26,29 @@ import fr.neamar.kiss.utils.fuzzy.MatchInfo;
 public class SettingsProvider extends SimpleProvider<SettingPojo> {
     private final static String SCHEME = "setting://";
     private final String settingName;
-    private final List<SettingPojo> pojos;
+    private final List<SettingPojo> pojos = new ArrayList<>();
     private final WeakReference<Context> contextReference;
 
     public SettingsProvider(Context context) {
-        pojos = new ArrayList<>();
+        this.settingName = context.getString(R.string.settings_prefix).toLowerCase(Locale.ROOT);
+        this.contextReference = new WeakReference<>(context);
+
+        reload();
+    }
+
+    @Override
+    public void reload() {
+        pojos.clear();
+
+        Context context = contextReference.get();
+        if (context == null) {
+            return;
+        }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!prefs.getBoolean("enable-settings", true)) {
+            return;
+        }
 
         PackageManager pm = context.getPackageManager();
         pojos.add(createPojo(context.getString(R.string.settings_airplane),
@@ -58,10 +77,6 @@ public class SettingsProvider extends SimpleProvider<SettingPojo> {
         }
         pojos.add(createPojo(context.getString(R.string.settings_dev),
                 Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS, R.drawable.setting_dev));
-
-        settingName = context.getString(R.string.settings_prefix).toLowerCase(Locale.ROOT);
-
-        this.contextReference = new WeakReference<>(context);
     }
 
     private void assignName(SettingPojo pojo, String name) {
@@ -87,24 +102,18 @@ public class SettingsProvider extends SimpleProvider<SettingPojo> {
 
     @Override
     public void requestResults(String query, Searcher searcher) {
-        Context context = contextReference.get();
-        if (context == null) {
-            return;
-        }
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!prefs.getBoolean("enable-settings", true)) {
-            return;
-        }
-
         StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, false);
         if (queryNormalized.codePoints.length == 0) {
             return;
         }
 
+        Context context = contextReference.get();
+        if (context == null) {
+            return;
+        }
         FuzzyScore fuzzyScore = FuzzyFactory.createFuzzyScore(context, queryNormalized.codePoints);
 
-        for (SettingPojo pojo : pojos) {
+        for (SettingPojo pojo : getPojos()) {
             MatchInfo matchInfo = fuzzyScore.match(pojo.normalizedName.codePoints);
             boolean match = pojo.updateMatchingRelevance(matchInfo, false);
 
@@ -122,15 +131,17 @@ public class SettingsProvider extends SimpleProvider<SettingPojo> {
 
 
     /**
-     * Tells whether or not this provider may be able to find the pojo with
-     * specified id
-     *
-     * @param id id we're looking for
-     * @return true if the provider can handle the query ; does not guarantee it
-     * will!
+     * {@inheritDoc}
      */
     public boolean mayFindById(String id) {
         return id.startsWith(SCHEME);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<SettingPojo> getPojos() {
+        return Collections.unmodifiableList(pojos);
+    }
 }

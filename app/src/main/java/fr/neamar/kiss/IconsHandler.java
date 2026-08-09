@@ -615,7 +615,9 @@ public class IconsHandler {
         }
 
         icon = ResourcesCompat.getDrawable(ctx.getResources(), resId, ctx.getTheme());
-        if (DrawableUtils.isAdaptiveIconDrawable(icon)) {
+        if (icon == null) {
+            return PackageManagerUtils.getDefaultActivityIcon(ctx);
+        } else if (DrawableUtils.isAdaptiveIconDrawable(icon)) {
             return icon;
         } else if (DrawableUtils.hasThemedIcons() &&
                 DrawableUtils.isThemedIconEnabled(ctx)) {

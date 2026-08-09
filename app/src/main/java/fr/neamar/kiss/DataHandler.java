@@ -831,6 +831,19 @@ public class DataHandler implements SharedPreferences.OnSharedPreferenceChangeLi
         }
     }
 
+    @Nullable
+    public SettingsProvider getSettingsProvider() {
+        ProviderEntry entry = this.providers.get("settings");
+        return (entry != null) ? ((SettingsProvider) entry.provider) : null;
+    }
+
+    public void reloadSettingsProvider() {
+        SettingsProvider settingsProvider = getSettingsProvider();
+        if (settingsProvider != null) {
+            settingsProvider.reload();
+        }
+    }
+    
     /**
      * @return list with favorite ids
      */
