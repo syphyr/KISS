@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
+import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.SettingPojo;
@@ -111,9 +113,16 @@ public class SettingsProvider extends SimpleProvider<SettingPojo> {
         if (context == null) {
             return;
         }
+
         FuzzyScore fuzzyScore = FuzzyFactory.createFuzzyScore(context, queryNormalized.codePoints);
+        Set<String> excludedFavoriteIds = KissApplication.getApplication(context).getDataHandler().getExcludedFavorites();
 
         for (SettingPojo pojo : getPojos()) {
+            // exclude favorites from results
+            if (excludedFavoriteIds.contains(pojo.getFavoriteId())) {
+                continue;
+            }
+
             MatchInfo matchInfo = fuzzyScore.match(pojo.normalizedName.codePoints);
             boolean match = pojo.updateMatchingRelevance(matchInfo, false);
 

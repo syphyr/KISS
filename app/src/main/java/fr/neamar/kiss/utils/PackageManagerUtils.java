@@ -340,6 +340,7 @@ public class PackageManagerUtils {
         return false;
     }
 
+    @NonNull
     public static Drawable getDefaultActivityIcon(@NonNull Context context) {
         Drawable drawable = context.getPackageManager().getDefaultActivityIcon();
         return DrawableUtils.getThemedDrawable(context, drawable);

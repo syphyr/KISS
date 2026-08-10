@@ -538,7 +538,7 @@ public abstract class Result<T extends Pojo> {
     }
 
     protected Drawable getThemedDrawable(@NonNull Context context, @NonNull Pojo pojo, @DrawableRes int resId) {
-        return KissApplication.getApplication(context).getIconsHandler().getThemedDrawable(pojo, resId, getBackgroundColor(context), getTextColor(context), getThemeFillColor(context));
+        return KissApplication.getApplication(context).getIconsHandler().getThemedDrawable(pojo, resId, getBackgroundColor(context), getTextColor(context), getThemeFillColor(context), makeThemedIcon());
     }
 
     @ColorInt
@@ -613,5 +613,12 @@ public abstract class Result<T extends Pojo> {
 
     public final String getCustomIconId() {
         return pojo.getCustomIconId();
+    }
+
+    /**
+     * @return true, if icon should be put onto shaped background and follow theme colors
+     */
+    protected boolean makeThemedIcon() {
+        return false;
     }
 }
