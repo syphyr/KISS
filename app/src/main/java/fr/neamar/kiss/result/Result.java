@@ -287,9 +287,7 @@ public abstract class Result<T extends Pojo> {
         if (isAllowedAsFavorite()) {
             // If app already pinned, do not display the "add to favorite" option
             // otherwise don't show the "remove favorite button"
-            String favApps = PreferenceManager.getDefaultSharedPreferences(context).
-                    getString("favorite-apps-list", "");
-            if (!favApps.contains(this.pojo.id + ";")) {
+            if (!KissApplication.getApplication(context).getDataHandler().hasFavorite(this.pojo.getFavoriteId())) {
                 adapter.add(new ListPopup.Item(context, R.string.menu_favorites_add));
             } else {
                 adapter.add(new ListPopup.Item(context, R.string.menu_favorites_remove));

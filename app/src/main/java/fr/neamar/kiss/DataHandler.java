@@ -961,6 +961,15 @@ public class DataHandler implements SharedPreferences.OnSharedPreferenceChangeLi
     }
 
     /**
+     * @param id favorite id
+     * @return true, if id is from favorite
+     */
+    public boolean hasFavorite(String id) {
+        List<String> favoriteIds = getFavoriteIds();
+        return favoriteIds.contains(id);
+    }
+
+    /**
      * Insert launching activity of package into history
      *
      * @param context     context
